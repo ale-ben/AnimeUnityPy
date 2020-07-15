@@ -36,7 +36,7 @@ def main():
         logger.debug(f"Season scraped: {selected}")
     printer.print_anime_list(selected, config, 2)
     if config['crawl_path'] is not None and config['download_path'] is not None:
-        jdownloader.send_to_jdownloader([selected], config)
+        jdownloader.send_to_jdownloader(selected, config)
 
 
 @logging_aux.logger_wraps()

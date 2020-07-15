@@ -1,7 +1,6 @@
 import colorama
 
-from AnimeUnityEngine import  logging_aux
-from loguru import logger
+from AnimeUnityEngine import logging_aux, common_classes
 
 """
 Print mode levels:
@@ -11,24 +10,19 @@ Print mode levels:
 
 colorama.init()
 
+
 @logging_aux.logger_wraps()
 def print_anime_list(search_res, config, print_mode):
-    if not isinstance(search_res, type([])):
-        logger.warning("a")
+    # Se search_res è un anime singolo lo trasformo in array per comodità
+    if isinstance(search_res, common_classes.Anime):
         search_res = [search_res]
     for res in search_res:
-        logger.warning("b")
+        # Primo livello di print, uso l'str della classe anime + info varie
         if print_mode >= 1 and config['print_level'] >= 1:
-            title = f"{colorama.Fore.BLUE} {str(res['id'])}"
-            if res['type'] != 'TV':
-                title = f"{title} {colorama.Fore.CYAN} {res['type']}"
-                if int(res['episodes_length']) > 50 and res['type'] != 'Movie':
-                    title = f"{title}(Movie)"
-            title = f"{title} {colorama.Fore.GREEN} {res['title']}{('{} ({})'.format(colorama.Fore.CYAN, res['title_eng']), '')[res['title_eng'] is None]} {colorama.Style.RESET_ALL}"
-            print(title)
+            print(str(res))
             print(
-                f"year: {res['date']}\t Episodes: {res['episodes_count']}\t Episode length: {res['episodes_length']} minutes")
+                f"year: {res.year}\t Episodes: {len(res.episodes)}\t Episode length: {res.episodes_length} minutes")
         if print_mode >= 2 and config['print_level'] >= 2:
             print("Episodes: ")
-            for episode in res['episodes']:
-                print(episode['link'])
+            for episode in res.episodes:
+                print(str(episode))
