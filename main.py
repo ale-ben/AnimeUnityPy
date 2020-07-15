@@ -99,7 +99,7 @@ def usage():
             f"\t-p, --printlevel (int):\t\tSpecify the print level (1: title only, 2: title and info, 3: title,info and episodes,...)\n" \
             f"\t-s, --season (str):\t\tSpecify what to look for ({scraper.defined_anime_types.append('ALL')}), Multiple options can be selected (TV,Movie)\n" \
             f"\t--loglevel (str):\t\tLog level -.- One of these options: {logging_aux.defined_log_levels}\n" \
-            f"\t--filelog: \t\t\tSave log > warning to a file" \
+            f"\t--filelog: \t\t\tSave log > warning to a file\n" \
             f"\t--jdownloadpath (Path):\t\tDestination folder for the anime dir. MUST be used in conjunction with --crawlpath\n" \
             f"\t--crawlpath (Path):\t\tDestination folder for the crawljobs. MUST be used in conjunction with -jdp\n" \
             f"\t-h, --help:\t\t\tShow this screen\n" \
