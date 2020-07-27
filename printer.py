@@ -8,6 +8,7 @@ from tqdm import trange
 from tqdm import tqdm
 from time import sleep
 from AnimeUnityEngine import logging_aux, common_classes
+import sys
 import re
 
 """
@@ -31,17 +32,16 @@ def print_anime_list(search_res, config, print_mode):
             print(
                 f"year: {res.year}\t Episodes: {len(res.episodes)}\t Episode length: {res.episodes_length} minutes")
         if print_mode >= 2 and config['print_level'] >= 2:
-            print("Episodes: ")
+            if "vvvvid.it" not in str(res.episodes[0]):
+                print("Episodes: ")
             for episode in res.episodes:
                 if "vvvvid.it" in str(episode):
+                    print("Downloading %s "%len(res.episodes)+" Episoes\n")
                     vvvvid_downloader(res)
                     break
                 else:
                     print(str(episode))
-
 def vvvvid_downloader(anime):
-    #ep = "ajeje"
-    #pbar = tqdm(total=len(anime.episodes), bar_format=(ep + "{l_bar}{bar}| {n_fmt}/{total_fmt}"))
     content_dir = os.path.join("Download", anime.slug)
     if not os.path.exists(content_dir):
         os.makedirs(content_dir)
@@ -76,21 +76,18 @@ def vvvvid_downloader(anime):
     pbar = tqdm(anime.episodes, bar_format=("{l_bar}{bar}| {n_fmt}/{total_fmt}"))
     for episode in pbar:
         title = re.findall("(.*)/(.*)$", episode.link)[0][1]
-        #https://www.vvvvid.it/show/558/sword-art-online/1104/541488/il-mondo-della-spada
-        pbar.set_description("Processing %s" % title)
-        #pbar.bar_format = (str(episode.e_id) + " " + "{l_bar}{bar}| {n_fmt}/{total_fmt}")
-        #ep = "brazorf "#episode.e_id
+        pbar.set_description("Processing: %s" % title)
         ydl_opts = {
             "format": "best",
             "outtmpl": "%s/%s.%%(ext)s" % (content_dir, title),
             "continuedl": True,
             "quiet" : True,
+            #"simulate":True,
         }
         if ffmpeg_local:
             ydl_opts["ffmpeg_location"] = ffmpeg_local
         with YoutubeDL(ydl_opts) as ydl:
-            #pbar.update(1)
-            #sleep(2)
-            ydl.download([episode.link])
-
-    #pbar.close()
+            try:
+                ydl.download([episode.link])
+            except KeyboardInterrupt:
+                sys.exit("Aborted")

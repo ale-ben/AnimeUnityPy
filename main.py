@@ -26,7 +26,10 @@ def main():
         exit(1)
     logger.debug("Printing anime list")
     printer.print_anime_list(search_res, config, 1)
-    anime_id = input("ID: ")
+    try:
+        anime_id = input("ID: ")
+    except KeyboardInterrupt:
+        sys.exit("Aborted")
     logger.debug("ID selected: {}".format(anime_id))
     selected = res_obj_manipulator.get_selected_anime_obj_by_id(search_res, anime_id)
     logger.debug("Anime selected: {}".format(selected))
@@ -89,7 +92,10 @@ def cli_mode():
 
 @logging_aux.logger_wraps()
 def interactive_mode():
-    keyword = input("Keyword: ")
+    try:
+        keyword = input("Keyword: ")
+    except KeyboardInterrupt:
+        sys.exit("Aborted")
     return keyword
 
 
