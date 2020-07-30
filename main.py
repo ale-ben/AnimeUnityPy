@@ -2,16 +2,20 @@ import getopt
 import sys
 from loguru import logger
 import colorama
-
+import signal
 from AnimeUnityEngine import scraper, logging_aux, res_obj_manipulator, jdownloader
 import printer
 
 config = {'crawl_path': None, 'download_path': None, 'print_level': 9, 'season': None, 'log_level': 'WARNING', 'file_log':False}
 version = "v1.0"
 
-
+def sig_handler(_signo, _stack_frame):
+    print("\n")
+    sys.exit(0)
 @logging_aux.logger_wraps()
 def main():
+    signal.signal(signal.SIGTERM, sig_handler)
+    signal.signal(signal.SIGINT, sig_handler)
     logging_aux.init_logger(level=config['log_level'], file_log=config['file_log'])
     if len(sys.argv) == 1:
         keyword = interactive_mode()
@@ -26,10 +30,7 @@ def main():
         exit(1)
     logger.debug("Printing anime list")
     printer.print_anime_list(search_res, config, 1)
-    try:
-        anime_id = input("ID: ")
-    except KeyboardInterrupt:
-        sys.exit("Aborted")
+    anime_id = input("ID: ")
     logger.debug("ID selected: {}".format(anime_id))
     selected = res_obj_manipulator.get_selected_anime_obj_by_id(search_res, anime_id)
     logger.debug("Anime selected: {}".format(selected))
@@ -92,10 +93,7 @@ def cli_mode():
 
 @logging_aux.logger_wraps()
 def interactive_mode():
-    try:
-        keyword = input("Keyword: ")
-    except KeyboardInterrupt:
-        sys.exit("Aborted")
+    keyword = input("Keyword: ")
     return keyword
 
 

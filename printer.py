@@ -29,14 +29,14 @@ def print_anime_list(search_res, config, print_mode):
         # Primo livello di print, uso l'str della classe anime + info varie
         if print_mode >= 1 and config['print_level'] >= 1:
             print(str(res))
-            print(
-                f"year: {res.year}\t Episodes: {len(res.episodes)}\t Episode length: {res.episodes_length} minutes")
+            print(f"year: {res.year}\t Episodes: {len(res.episodes)}\t Episode length: {res.episodes_length} minutes")
+            print("---------------------------------------------------------------")
         if print_mode >= 2 and config['print_level'] >= 2:
             if "vvvvid.it" not in str(res.episodes[0]):
                 print("Episodes: ")
             for episode in res.episodes:
                 if "vvvvid.it" in str(episode):
-                    print("Downloading %s "%len(res.episodes)+" Episoes\n")
+                    print("Downloading %s"%len(res.episodes)+" Episoes\n")
                     vvvvid_downloader(res)
                     break
                 else:
@@ -45,34 +45,19 @@ def vvvvid_downloader(anime):
     content_dir = os.path.join("Download", anime.slug)
     if not os.path.exists(content_dir):
         os.makedirs(content_dir)
-
     ffmpeg_local = ""
     if which("ffmpeg") is None:
-        # If the user is running the script from Windows or Mac, ffmpeg's build can be inside dependency folder
-        if system() in ["Windows", "Darwin"]:
-            _dir = os.path.dirname(os.path.realpath(__file__))
-            ffmpeg_dir_files = os.listdir(os.path.join(_dir, "ffmpeg"))
-            ffmpeg_dir_files.remove("readme.md")
-            # If the directory is ambiguous stop the script
-            if len(ffmpeg_dir_files) > 1:
-                print(
-                    "La tua directory di ffmpeg contiene troppi file/cartelle. Assicurati che contenga solo il readme e la cartella con la build di ffmpeg."
-                )
-                quit()
-            elif len(ffmpeg_dir_files) == 0:
-                print(
-                    "Questo script ha una dipendenza da ffmpeg, che non risulta essere installato. Per maggiori informazioni, consulta il readme sulla pagina GitHub del progetto."
-                )
-                quit()
-
-            ffmpeg_local = os.path.join(
-                _dir, "ffmpeg", ffmpeg_dir_files[0], "bin"
-            )
-        else:
-            print(
-                "Questo script ha una dipendenza da ffmpeg, che non risulta essere installato. Per maggiori informazioni, consulta il readme sulla pagina GitHub del progetto, nella sezione installazione per Ubuntu."
-            )
+        _dir = os.path.dirname(os.path.realpath(__file__))
+        ffmpeg_dir_files = os.listdir(os.path.join(_dir, "ffmpeg"))
+        ffmpeg_dir_files.remove("readme.md")
+        # If the directory is ambiguous stop the script
+        if len(ffmpeg_dir_files) > 1:
+            print("Controlla che la cartella ffmpeg contwnga solo il readme e la cartella con òa build di ffmpeg")
             quit()
+        elif len(ffmpeg_dir_files) == 0:
+            print("Installa ffmpeg, consulta la pagina su GitHub per maggiori informazioni")
+            quit()
+        ffmpeg_local = os.path.join( _dir, "ffmpeg", ffmpeg_dir_files[0], "bin")
     pbar = tqdm(anime.episodes, bar_format=("{l_bar}{bar}| {n_fmt}/{total_fmt}"))
     for episode in pbar:
         title = re.findall("(.*)/(.*)$", episode.link)[0][1]
@@ -82,7 +67,7 @@ def vvvvid_downloader(anime):
             "outtmpl": "%s/%s.%%(ext)s" % (content_dir, title),
             "continuedl": True,
             "quiet" : True,
-            #"simulate":True,
+            #"simulate":True, # Debug: simulate a dowload 
         }
         if ffmpeg_local:
             ydl_opts["ffmpeg_location"] = ffmpeg_local
@@ -90,4 +75,5 @@ def vvvvid_downloader(anime):
             try:
                 ydl.download([episode.link])
             except KeyboardInterrupt:
-                sys.exit("Aborted")
+                sys.exit()
+    print("All Download Completed!")
