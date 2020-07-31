@@ -42,7 +42,10 @@ def print_anime_list(search_res, config, print_mode):
                 else:
                     print(str(episode))
 def vvvvid_downloader(anime):
-    content_dir = os.path.join("Download", anime.slug)
+    if(config['download_path'] is not None):
+        content_dir = os.path.join(config['download_path'], anime.slug)
+    else:
+        content_dir = os.path.join("Download", anime.slug)
     if not os.path.exists(content_dir):
         os.makedirs(content_dir)
     ffmpeg_local = ""
