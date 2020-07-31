@@ -2,16 +2,20 @@ import getopt
 import sys
 from loguru import logger
 import colorama
-
+import signal
 from AnimeUnityEngine import scraper, logging_aux, res_obj_manipulator, jdownloader
 import printer
 
 config = {'crawl_path': None, 'download_path': None, 'print_level': 9, 'season': None, 'log_level': 'WARNING', 'file_log':False}
 version = "v1.0"
 
-
+def sig_handler(_signo, _stack_frame):
+    print("\n")
+    sys.exit(0)
 @logging_aux.logger_wraps()
 def main():
+    signal.signal(signal.SIGTERM, sig_handler)
+    signal.signal(signal.SIGINT, sig_handler)
     logging_aux.init_logger(level=config['log_level'], file_log=config['file_log'])
     if len(sys.argv) == 1:
         keyword = interactive_mode()

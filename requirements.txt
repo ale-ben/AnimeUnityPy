@@ -9,4 +9,6 @@ pyparsing==2.4.7
 requests==2.24.0
 requests-toolbelt==0.9.1
 soupsieve==2.0.1
+tqdm==4.48.0
 urllib3==1.25.9
+youtube-dl==2020.6.16.1
