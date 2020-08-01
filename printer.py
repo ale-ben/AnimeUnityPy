@@ -37,19 +37,21 @@ def print_anime_list(search_res, config, print_mode):
             for episode in res.episodes:
                 if "vvvvid.it" in str(episode):
                     print("Downloading %s"%len(res.episodes)+" Episoes\n")
-                    vvvvid_downloader(res)
+                    vvvvid_downloader(config,res)
                     break
                 else:
                     print(str(episode))
-def vvvvid_downloader(anime):
-    content_dir = os.path.join("Download", anime.slug)
+def vvvvid_downloader(config,anime):
+    if(config['download_path'] is not None):
+        content_dir = os.path.join(config['download_path'], anime.slug)
+    else:
+        content_dir = os.path.join("Download", anime.slug)
     if not os.path.exists(content_dir):
         os.makedirs(content_dir)
     ffmpeg_local = ""
     if which("ffmpeg") is None:
         _dir = os.path.dirname(os.path.realpath(__file__))
         ffmpeg_dir_files = os.listdir(os.path.join(_dir, "ffmpeg"))
-        ffmpeg_dir_files.remove("readme.md")
         # If the directory is ambiguous stop the script
         if len(ffmpeg_dir_files) > 1:
             print("Controlla che la cartella ffmpeg contwnga solo il readme e la cartella con òa build di ffmpeg")
