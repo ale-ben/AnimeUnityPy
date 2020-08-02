@@ -51,10 +51,8 @@ def vvvvid_downloader(config,anime):
     ffmpeg_local = ""
     if which("ffmpeg") is None:
         _dir = os.path.dirname(os.path.realpath(__file__))
-        try:
-            os.remove(_dir+"/ffmpeg/.DS_Store")
-        except OSError:
-            pass
+        if os.path.isfile(os.path.join(_dir, "ffmpeg", ".DS_Store")):
+            os.remove(os.path.join(_dir, "ffmpeg", ".DS_Store"))
         ffmpeg_dir_files = os.listdir(os.path.join(_dir, "ffmpeg"))
         ffmpeg_dir_files.remove("readme.md")
         # If the directory is ambiguous stop the script
