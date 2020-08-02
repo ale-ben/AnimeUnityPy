@@ -1,0 +1,1 @@
+Place your ffmpeg folder here. The result path must be AnimeUnityUI/ffmpeg/ffmpeg-xxxxxxxxx
