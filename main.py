@@ -39,7 +39,6 @@ def main():
     logger.debug("Printing anime episodes")
     if config['season'] is not None:
         selected = scraper.season_scraper(selected, config)
-        print(selected)
         logger.debug(f"Season scraped: {selected}")
     printer.print_anime_list(selected, config, 2)
     if config['crawl_path'] is not None and config['download_path'] is not None:
