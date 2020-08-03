@@ -1,5 +1,6 @@
 import getopt
 import sys
+import os
 from loguru import logger
 import colorama
 import signal
@@ -31,12 +32,14 @@ def main():
     logger.debug("Printing anime list")
     printer.print_anime_list(search_res, config, 1)
     anime_id = input("ID: ")
+    os.system('cls' if os.name == 'nt' else 'clear')
     logger.debug("ID selected: {}".format(anime_id))
     selected = res_obj_manipulator.get_selected_anime_obj_by_id(search_res, anime_id)
     logger.debug("Anime selected: {}".format(selected))
     logger.debug("Printing anime episodes")
     if config['season'] is not None:
         selected = scraper.season_scraper(selected, config)
+        print(selected)
         logger.debug(f"Season scraped: {selected}")
     printer.print_anime_list(selected, config, 2)
     if config['crawl_path'] is not None and config['download_path'] is not None:
