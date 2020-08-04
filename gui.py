@@ -1,18 +1,18 @@
 import sys
-
+from PyQt5 import QtGui, QtWidgets
+from PyQt5.QtGui import QIcon
+import PySide2
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QApplication, QPushButton, QLineEdit, QComboBox
 from PySide2.QtCore import QFile, QObject, Signal, Slot
-
 search_ui = 'UIs/searchwindow.ui'
 
 
 class SearchWindow(QObject):
     search_res_signal = Signal(dict)
-
     def __init__(self):
         super(SearchWindow, self).__init__()
-
+        #self.setWindowIcon(QtGui.QIcon('AnimeUnity-logo.png'))
         ui_file = QFile(search_ui)
 
         if not ui_file.open(QFile.ReadOnly):
@@ -35,7 +35,7 @@ class SearchWindow(QObject):
         self.search_btn.clicked.connect(self.debug_print)
 
     def debug_print(self):
-        title = self.year_ledit.text()
+        title = self.title_ledit.text()
         genre = self.genre_cbox.currentText()
         year = self.year_ledit.text()
         print(f"|{title}|{genre}|{year}")
@@ -53,6 +53,7 @@ def bind_ui():
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
+    app.setWindowIcon(PySide2.QtGui.QIcon('AnimeUnity-logo.png'))
     search = SearchWindow()
     bind_ui()
     sys.exit(app.exec_())
