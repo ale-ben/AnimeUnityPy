@@ -1,6 +1,4 @@
 import sys
-from PyQt5 import QtGui, QtWidgets
-from PyQt5.QtGui import QIcon
 import PySide2
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QApplication, QPushButton, QLineEdit, QComboBox
@@ -12,7 +10,6 @@ class SearchWindow(QObject):
     search_res_signal = Signal(dict)
     def __init__(self):
         super(SearchWindow, self).__init__()
-        #self.setWindowIcon(QtGui.QIcon('AnimeUnity-logo.png'))
         ui_file = QFile(search_ui)
 
         if not ui_file.open(QFile.ReadOnly):
