@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>300</width>
-    <height>160</height>
+    <width>1193</width>
+    <height>572</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -26,6 +26,19 @@
       <property name="sizeConstraint">
        <enum>QLayout::SetDefaultConstraint</enum>
       </property>
+      <item>
+       <widget class="QPushButton" name="settings_b">
+        <property name="maximumSize">
+         <size>
+          <width>75</width>
+          <height>7215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Settings</string>
+        </property>
+       </widget>
+      </item>
       <item>
        <spacer name="verticalSpacer_12">
         <property name="orientation">
@@ -372,8 +385,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>300</width>
-     <height>22</height>
+     <width>1193</width>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuAnimeUnityUI">
