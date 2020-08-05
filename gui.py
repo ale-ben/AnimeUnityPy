@@ -8,8 +8,16 @@ import printer
 import ast
 search_ui = 'UIs/searchwindow.ui'
 config_io = 'UIs/settingswindow.ui'
-imported_config = {'crawl_path': None, 'download_path': None, 'print_level': 9, 'season': None, 'log_level': 'WARNING', 'file_log':False}
+imported_config = {'crawl_path': None, 'download_path': None, 'season': None}
+def import_config():
+    global imported_config
+    with open('config.txt') as f:
+            config = (f.read())
+            #converte da stringa a  dizionario
+            imported_config = ast.literal_eval(config)
+            f.close()
 class SearchWindow(QWidget):
+    import_config()
     def settings(self):
         loader = QUiLoader()
         ui_file = QFile(config_io)
@@ -20,11 +28,18 @@ class SearchWindow(QWidget):
         self.crawl_path = self.wid.findChild(QLineEdit, 'crawl_ledit')
         self.download_path = self.wid.findChild(QLineEdit, 'download_ledit')
         self.season = self.wid.findChild(QLineEdit, 'season_ledit')
+        if (imported_config['season']) is not None:
+            self.season.setText(imported_config['season'])
+        if (imported_config['download_path']) is not None:
+            self.download_path.setText(imported_config['download_path'])
+        if (imported_config['crawl_path']) is not None:
+            self.crawl_path.setText(imported_config['crawl_path'])
         #ui_file.close()
         self.bind_attributes_settings()
     def bind_attributes_settings(self):
         self.save_btn.clicked.connect(self.save_config)
     def save_config(self):
+        global imported_config
         self.crawl_path = self.wid.findChild(QLineEdit, 'crawl_ledit')
         self.download_path = self.wid.findChild(QLineEdit, 'download_ledit')
         self.season = self.wid.findChild(QLineEdit, 'season_ledit')
@@ -33,9 +48,9 @@ class SearchWindow(QWidget):
         down_path = (self.download_path.text())
         season_sel = (self.season.text())
         # building and saving conifg
-        new_config = "{'crawl_path': %s, 'download_path': %s, 'print_level': 9, 'season': '%s', 'log_level': 'WARNING', 'file_log':False}"%(self.crawl_path.text(),self.download_path.text(),self.season.text())
+        imported_config = "{'crawl_path': '%s', 'download_path': '%s', 'season': '%s'}"%(self.crawl_path.text(),self.download_path.text(),self.season.text())
         with open('config.txt','w') as f:
-            f.write(new_config)
+            f.write(imported_config)
             f.close()
         #test new file
         self.wid.close()
@@ -67,25 +82,11 @@ class SearchWindow(QWidget):
         self.search_btn.clicked.connect(self.debug_print)
         self.settings_btn.clicked.connect(self.settings)
     def debug_print(self):
-        global imported_config
         title = self.title_ledit.text()
         genre = self.genre_cbox.currentText()
         year = self.year_ledit.text()
         print(f"|{title}|{genre}|{year}")
         self.search_res_signal.emit({'title': title, 'genre': genre, 'year': year})
-
-        # importa conifg, l'idea è che nella pagina di ricerca ci sia un tasto 'impostazioni' in cui si possa impostare tutto
-        # quste impostazioni poi vanno salvate in conifg.txt
-        with open('config.txt') as f:
-            config = (f.read())
-            #converte da stringa a  dizionario
-            imported_config = ast.literal_eval(config)
-            f.close()
-        # test
-        #search_res = scraper.search(title=title)
-        #print(imported_config)
-        #printer.print_anime_list(search_res, imported_config, 1)
-
 @Slot(dict)
 def print_search_res(res):
     print(res)
