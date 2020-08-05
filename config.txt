@@ -1,0 +1,1 @@
+{'crawl_path': None, 'download_path': None, 'print_level': 9, 'season': None, 'log_level': 'WARNING', 'file_log':False}
