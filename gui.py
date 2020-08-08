@@ -41,10 +41,16 @@ class SearchWindow(QWidget):
         self.crawl_path.setEnabled(self.create_crw.isChecked())
         self.download_path.setEnabled(self.create_crw.isChecked())
         #ui_file.close()
+        create_crawl = self.create_crw
         self.bind_attributes_settings()
     def bind_attributes_settings(self):
-        print(create_crawl)
+        self.create_crw.clicked.connect(self.changed_state)
         self.save_btn.clicked.connect(self.save_config)
+    def changed_state(self):
+        self.crawl_path = self.wid.findChild(QLineEdit, 'crawl_ledit')
+        self.download_path = self.wid.findChild(QLineEdit, 'download_ledit')
+        self.crawl_path.setEnabled(create_crawl.isChecked())
+        self.download_path.setEnabled(create_crawl.isChecked())
     def save_config(self):
         global imported_config
         self.crawl_path = self.wid.findChild(QLineEdit, 'crawl_ledit')
