@@ -4,24 +4,23 @@ from PySide2.QtUiTools import QUiLoader
 from PySide2.QtWidgets import QApplication, QPushButton, QLineEdit, QComboBox, QWidget, QCheckBox
 from PySide2.QtCore import QFile, QObject, Signal, Slot
 #from AnimeUnityEngine import scraper, logging_aux, res_obj_manipulator, jdownloader
-import printer
 import ast
 search_ui = 'UIs/searchwindow.ui'
 config_io = 'UIs/settingswindow.ui'
-imported_config = {'crawl_path': None, 'download_path': None, 'season': None}
+config = {'crawl_path': None, 'download_path': None, 'season': None}
 create_crawl = False
 def import_config():
-    global imported_config
+    global config
     with open('config.txt') as f:
             config = (f.read())
             #converte da stringa a  dizionario
-            imported_config = ast.literal_eval(config)
+            config = ast.literal_eval(config)
             f.close()
 class SearchWindow(QWidget):
     import_config()
     def settings(self):
         global create_crawl
-        global imported_config
+        global config
         loader = QUiLoader()
         ui_file = QFile(config_io)
         self.wid = loader.load(ui_file)
@@ -32,12 +31,12 @@ class SearchWindow(QWidget):
         self.crawl_path = self.wid.findChild(QLineEdit, 'crawl_ledit')
         self.download_path = self.wid.findChild(QLineEdit, 'download_ledit')
         self.season = self.wid.findChild(QLineEdit, 'season_ledit')
-        if (imported_config['season'] is not None):
-            self.season.setText(imported_config['season'])
-        if (imported_config['download_path'] is not None):
-            self.download_path.setText(imported_config['download_path'])
-        if (imported_config['crawl_path'] is not None):
-            self.crawl_path.setText(imported_config['crawl_path'])
+        if (config['season'] is not None):
+            self.season.setText(config['season'])
+        if (config['download_path'] is not None):
+            self.download_path.setText(config['download_path'])
+        if (config['crawl_path'] is not None):
+            self.crawl_path.setText(config['crawl_path'])
         self.crawl_path.setEnabled(self.create_crw.isChecked())
         self.download_path.setEnabled(self.create_crw.isChecked())
         #ui_file.close()
@@ -52,20 +51,30 @@ class SearchWindow(QWidget):
         self.crawl_path.setEnabled(create_crawl.isChecked())
         self.download_path.setEnabled(create_crawl.isChecked())
     def save_config(self):
-        global imported_config
+        global config
         self.crawl_path = self.wid.findChild(QLineEdit, 'crawl_ledit')
         self.download_path = self.wid.findChild(QLineEdit, 'download_ledit')
         self.season = self.wid.findChild(QLineEdit, 'season_ledit')
         #save_button
         create_crawl = self.create_crw.isChecked()
-        crw_path = (self.crawl_path.text())
-        down_path = (self.download_path.text())
-        season_sel = (self.season.text())
-        # building and saving conifg
-        imported_config = "{'crawl_path': '%s', 'download_path': '%s', 'season': '%s'}"%(self.crawl_path.text(),self.download_path.text(),self.season.text())
-        with open('config.txt','w') as f:
-            f.write(imported_config)
-            f.close()
+        if(create_crawl):
+            crw_path = (self.crawl_path.text())
+            down_path = (self.download_path.text())
+            season_sel = (self.season.text())
+            # building and saving conifg
+            config = "{'crawl_path': '%s', 'download_path': '%s', 'season': '%s'}"%(crw_path,down_path,season_sel)
+            with open('config.txt','w') as f:
+                f.write(config)
+                f.close()
+        else:
+            crw_path = config['crawl_path']
+            down_path = config['download_path']
+            season_sel = (self.season.text())
+            # building and saving conifg
+            config = "{'crawl_path': '%s', 'download_path': '%s', 'season': '%s'}"%(crw_path,down_path,season_sel)
+            with open('config.txt','w') as f:
+                f.write(config)
+                f.close()
         import_config()
         #test new file
         self.wid.close()
