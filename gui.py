@@ -1,7 +1,7 @@
 import sys
 import PySide2
 from PySide2.QtUiTools import QUiLoader
-from PySide2.QtWidgets import QApplication, QPushButton, QLineEdit, QComboBox, QWidget
+from PySide2.QtWidgets import QApplication, QPushButton, QLineEdit, QComboBox, QWidget, QCheckBox
 from PySide2.QtCore import QFile, QObject, Signal, Slot
 #from AnimeUnityEngine import scraper, logging_aux, res_obj_manipulator, jdownloader
 import printer
@@ -9,6 +9,7 @@ import ast
 search_ui = 'UIs/searchwindow.ui'
 config_io = 'UIs/settingswindow.ui'
 imported_config = {'crawl_path': None, 'download_path': None, 'season': None}
+create_crawl = False
 def import_config():
     global imported_config
     with open('config.txt') as f:
@@ -19,24 +20,30 @@ def import_config():
 class SearchWindow(QWidget):
     import_config()
     def settings(self):
+        global create_crawl
+        global imported_config
         loader = QUiLoader()
         ui_file = QFile(config_io)
         self.wid = loader.load(ui_file)
         self.wid.setWindowTitle('Settings')
         self.wid.show()
+        self.create_crw = self.wid.findChild(QCheckBox,'crawljob_check')
         self.save_btn = self.wid.findChild(QPushButton, 'save_button')
         self.crawl_path = self.wid.findChild(QLineEdit, 'crawl_ledit')
         self.download_path = self.wid.findChild(QLineEdit, 'download_ledit')
         self.season = self.wid.findChild(QLineEdit, 'season_ledit')
-        if (imported_config['season']) is not None:
+        if (imported_config['season'] is not None):
             self.season.setText(imported_config['season'])
-        if (imported_config['download_path']) is not None:
+        if (imported_config['download_path'] is not None):
             self.download_path.setText(imported_config['download_path'])
-        if (imported_config['crawl_path']) is not None:
+        if (imported_config['crawl_path'] is not None):
             self.crawl_path.setText(imported_config['crawl_path'])
+        self.crawl_path.setEnabled(self.create_crw.isChecked())
+        self.download_path.setEnabled(self.create_crw.isChecked())
         #ui_file.close()
         self.bind_attributes_settings()
     def bind_attributes_settings(self):
+        print(create_crawl)
         self.save_btn.clicked.connect(self.save_config)
     def save_config(self):
         global imported_config
@@ -44,6 +51,7 @@ class SearchWindow(QWidget):
         self.download_path = self.wid.findChild(QLineEdit, 'download_ledit')
         self.season = self.wid.findChild(QLineEdit, 'season_ledit')
         #save_button
+        create_crawl = self.create_crw.isChecked()
         crw_path = (self.crawl_path.text())
         down_path = (self.download_path.text())
         season_sel = (self.season.text())
@@ -52,6 +60,7 @@ class SearchWindow(QWidget):
         with open('config.txt','w') as f:
             f.write(imported_config)
             f.close()
+        import_config()
         #test new file
         self.wid.close()
 
