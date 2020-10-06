@@ -1,12 +1,8 @@
 import colorama
 import os
-import platform
 from shutil import which
-from platform import system
 from youtube_dl import YoutubeDL
-from tqdm import trange
 from tqdm import tqdm
-from time import sleep
 from AnimeUnityEngine import logging_aux, common_classes
 import sys
 import re
